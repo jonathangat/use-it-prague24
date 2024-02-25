@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+
+html,
+body,
+#map {
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+.dm-sans-100 {
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+  }
+  .dm-sans-200 {
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 200;
+    font-style: normal;
+  }
+
+  .dm-sans-500 {
+    font-family: "DM Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+  }
+
+
+  .custom-icon {
+    display: inline-block;
+    width: 16px; /* Adjust width and height according to your icon size */
+    height: 16px;
+    font-family: "DM Sans", sans-serif;
+    font-weight: 400;
+    background-size: contain; /* Ensure the icon fits within the specified width and height */
+    background-repeat: no-repeat;
+    vertical-align: middle; /* Adjust alignment as needed */
+    margin-right: 5px; /* Adjust spacing as needed */
+}
+
+.legend {
+  font-family: "DM Sans", sans-serif;
+  font-weight: 400;
+  font-size: large;
+
+}
+
+
+.tilt {
+  animation: tiltAnimation 2s infinite alternate; /* Alternates the animation direction */
+  transform-origin: center; /* Sets the transformation origin to the center */
+  cursor: grab;
+}
+
+@keyframes tiltAnimation {
+  0% {
+    transform: rotate(0deg); /* Initial position */
+  }
+  100% {
+    transform: rotate(10deg); /* Tilt angle */
+  }
+}
+
+
+.jump:hover {
+  animation: jump 0.3s ease-in-out;
+}
+
+@keyframes jump {
+  0% {
+      transform: translateY(0);
+  }
+  50% {
+      transform: translateY(-5px);
+  }
+  100% {
+      transform: translateY(0);
+  }
+}
+
+.point{
+  cursor: pointer;
+}
