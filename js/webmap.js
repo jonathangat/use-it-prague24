@@ -40,9 +40,13 @@ var geodata = {
     
     
     
-    
-
-// set up map
+// check desktop vs mobile
+if (window.innerWidth <= 768) {
+  // The user is accessing the site via a mobile device or a small screen
+  alert('Apologies, the app is currently only available via desktop or wide screen view.');
+} else {
+  // The user is accessing the site via a desktop or a large screen
+  // set up map
 var map = L.map("map", { zoomControl: false }).setView([50.0894483,14.4189551], 15);
 
 // add tiles 
@@ -259,4 +263,7 @@ map.on('click', function(e) {
     
 });
 
+
+
+}
 
