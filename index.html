@@ -74,7 +74,8 @@
                 data-target="#chooseAcategoryModal">
                 <img src="./img/actions/choose_category.png" class="image" />
             </button>
-            <button type="button" class="btn btn-outline-warning btn-img-container">
+            <button type="button" class="btn btn-outline-warning btn-img-container" data-toggle="modal"
+                data-target="#spiderModal">
                 <img src="./img/actions/play_a_game.png" class="image" />
             </button>
 
@@ -211,6 +212,36 @@
                         Selection</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal" id="choose-category-button">Ahoj
                         Sailor</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- MODAL: SPIDER! -->
+    <div class="modal fade" id="spiderModal" tabindex="-1" role="dialog" aria-labelledby="spiderModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="spiderModalTitle">
+                        <img src="./img/actions/play_a_game.png" width="100%" />
+                        Let's explore!
+                    </h5>
+
+                </div>
+
+                <div class="modal-body" style="margin:0;">
+                    <p>Meet our friendly spider navigator! At your command, he will shoot his webs and direct you to the
+                        five nearest destinations, based on your current selection and real-time location. Are you
+                        ready?</p>
+                    <img src="./img/graphics/spider_navigator.png" style="width:100%" alt="Friendly Spider Navigator">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="choose-category-button">Show
+                        me the way!</button>
                 </div>
             </div>
         </div>
