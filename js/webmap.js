@@ -375,10 +375,54 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
             
         }
 
-        
+    });
 
+
+    // spider game!
+
+
+    $('#spiderModal').on('hidden.bs.modal', function(){
+        let userLong;
+        let userLat;
+        map.spin(true);
+
+        const options = {
+            enableHighAccuracy: false
+          };
+          
+          function success(pos) {
+            const crd = pos.coords;
+            userLat = crd.latitude;
+            userLong = crd.longitude;
+            map.spin(false);
+
+            // get the map bounds
+            let userLocation = L.latLng(userLat, userLong);
+            let mapBounds = map.getBounds();
+            if (mapBounds.contains(userLocation)) {
+                console.log(`Yay! You are in Prague at the moment! Your location is ${userLong},${userLat}`)
+
+            }
+            else {
+                alert(`Arrr! Where be ye hidin'?? Are you even in Prague?!`)
+            }
+
+            
+
+          }
+          
+          function error(err) {
+            map.spin(false);
+            alert(`Arrr! Ye be as elusive as buried treasure on a moonless night! I can't locate ye!`)
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+          }
+          
+          navigator.geolocation.getCurrentPosition(success, error, options);
+
+          
 
     });
+
 
 
 
