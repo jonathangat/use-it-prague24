@@ -218,8 +218,10 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
 
 
 
-    // create feature group
+    // create feature groups
     let locations  = L.featureGroup();
+    let locations_filtered =  L.featureGroup();
+
     L.geoJSON(raw_data, {    pointToLayer: function(feature, latlng) {
             // Use the custom icon for each feature
             return L.marker(latlng, { icon: iconDic[feature.properties.legend_category] });
@@ -244,6 +246,13 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
 
     // act like a local save button
     $('#exampleModalCenter').on('hidden.bs.modal', function(){
+
+        // remove all content from map
+        locations.clearLayers();
+        locations_filtered.clearLayers();
+        map.removeLayer(locations);
+        map.removeLayer(locations_filtered);
+
         // get neighbourhood
         let selected_neighbourhood = $('#dropdownMenuLink').text().trim();
         if (selected_neighbourhood.trim() === 'Select neighbourhood:') {
@@ -327,8 +336,9 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
         });
         
         // get existing layer
-        let existing_layer = locations.toGeoJSON();
 
+        let existing_layer = locations.toGeoJSON();
+        locations_filtered.clearLayers();
         function filterGeoJSON(geojson, filterCategories) {
             return {
             ...geojson,
@@ -340,28 +350,29 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
             };
         };
 
+
         if (selected_categories_list.length > 0) {
             let filtered_layer = filterGeoJSON(existing_layer, selected_categories_list);
-            locations.clearLayers();
+            map.removeLayer(locations);
+            map.removeLayer(locations_filtered);
             L.geoJSON(filtered_layer, {    pointToLayer: function(feature, latlng) {
                 // Use the custom icon for each feature
                 return L.marker(latlng, { icon: iconDic[feature.properties.legend_category] });
             },
             onEachFeature: function(feature, layer) {
                 layer.bindPopup(`<div class="dm-sans-100"><h3>${feature.properties.quirky_title}</h3></div><div class="dm-sans-200">${feature.properties.ai_description}</div> <div class="dm-sans-100" style="margin-top:10px;"><b>${feature.properties.location_name} </b>${feature.properties.sub_category} in ${feature.properties.neighbourhood}</div><div class="dm-sans-100">${feature.properties.address}</div>`);
-            }}).addTo(locations);
-
-
-            populate_category_filter(filtered_layer);
+            }}).addTo(locations_filtered);
+            
 
             // add to map
-            locations.addTo(map);
-            map.flyToBounds(locations.getBounds());
+            locations_filtered.addTo(map);
+            map.flyToBounds(locations_filtered.getBounds());
 
         }
 
         else {
             alert('Aye aye captain! Choose at least one category!')
+            
         }
 
         
