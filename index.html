@@ -133,15 +133,8 @@
                                 Select neighbourhood:
                             </a>
 
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                <a class="dropdown-item" href="#">Staré Město</a>
-                                <a class="dropdown-item" href="#">Smíchov</a>
-                                <a class="dropdown-item" href="#">Petrská čtvrť</a>
-                                <a class="dropdown-item" href="#">Žižkov</a>
-                                <a class="dropdown-item" href="#">Malá Strana</a>
-                                <a class="dropdown-item" href="#">Karlín</a>
-                                <a class="dropdown-item" href="#">Holešovice</a>
-
+                            <div class="dropdown-menu" id="select-neighbourhood-list"
+                                aria-labelledby="dropdownMenuLink">
                             </div>
                         </div>
                     </div>
@@ -178,6 +171,12 @@
                                 Buy Some Souvenir</label>
                             </input>
 
+                            <input type="checkbox" class="btn-check" id="btn-try-czech-delicassy" autocomplete="off">
+                            <label class="btn btn-outline-primary" for="btn-try-czech-delicassy">
+                                <img src="./img/markers/try-czech-delicasy.png" class="modal-icon" />
+                                Try Czech Delicacy</label>
+                            </input>
+
                         </div>
                     </div>
 
@@ -210,7 +209,7 @@
                     <button type="button" class="btn btn-secondary" id="select-all-categories-btn">Select All</button>
                     <button type="button" class="btn btn-secondary" id="select-no-categories-btn">Clear
                         Selection</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="choose-category-button">Ahoy
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="choose-category-button">Ahoj
                         Sailor</button>
                 </div>
             </div>

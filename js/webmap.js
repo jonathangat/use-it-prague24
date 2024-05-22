@@ -34,13 +34,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
                 
             });
+
+            // sort categories
+            let categories_array = [];
+            categories_set.forEach(function(val){categories_array.push(val)});
+            categories_array.sort();
     
             // empty category filter list
             $('#choose-category-modal-body').empty();
     
             // populate category filter list
             let category_idx = 0;
-            categories_set.forEach(function(val) {
+            categories_array.forEach(function(val) {
                 $('#choose-category-modal-body').append(`
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="${val}" id="category_${category_idx}" checked>
@@ -180,6 +185,23 @@ var iconDic = {
 }
 // get raw data
 const raw_data = await pois;
+
+// populate neighbourhoods
+let neighbourhoods_set = new Set();
+$.each(raw_data.features, function(i, val) {
+    neighbourhoods_set.add(val.properties.neighbourhood)
+});
+
+let neighbourhoods_array = [];
+neighbourhoods_set.forEach(function(val) {neighbourhoods_array.push(val)});
+neighbourhoods_array.sort()
+
+neighbourhoods_array.forEach(function(val) {
+    $('#select-neighbourhood-list').append(`<a class="dropdown-item" href="#">${val}</a>`)
+});
+
+
+
 
 // populate legend legendBodyContent
 let labels = [];
