@@ -66,15 +66,15 @@
         </div>
         -->
         <div class="container-for-buttons">
-            <button type="button" class="btn btn-outline-success btn-img-container" data-toggle="modal"
+            <button type="button" class="btn btn-outline-success btn-img-container dm-sans-200" data-toggle="modal"
                 data-target="#exampleModalCenter">
                 <img src="./img/actions/act_like_a_local.png" class="image" />
             </button>
-            <button type="button" class="btn btn-outline-danger btn-img-container" data-toggle="modal"
+            <button type="button" class="btn btn-outline-danger btn-img-container dm-sans-200" data-toggle="modal"
                 data-target="#chooseAcategoryModal">
                 <img src="./img/actions/choose_category.png" class="image" />
             </button>
-            <button type="button" class="btn btn-outline-warning btn-img-container" data-toggle="modal"
+            <button type="button" class="btn btn-outline-warning btn-img-container dm-sans-200" data-toggle="modal"
                 data-target="#spiderModal">
                 <img src="./img/actions/play_a_game.png" class="image" />
             </button>
@@ -101,7 +101,9 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary dm-sans-200" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="choose-all-neighbourhood-button">Reset Map</button>
                 </div>
             </div>
         </div>
@@ -111,8 +113,8 @@
 
 
     <!-- MODAL: ACT LIKE A LOCAL -->
-    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-        aria-hidden="true">
+    <div class="modal fade dm-sans-200" id="exampleModalCenter" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -123,7 +125,7 @@
 
                 </div>
 
-                <div class="modal-body">
+                <div class="modal-body dm-sans-200">
                     <!-- WHAT DO YOU FANCY EXPLORING?-->
                     <div class="row">
                         <h6>What do you fancy exloring?</h6>
@@ -178,7 +180,7 @@
 
 
     <!-- MODAL: CHOOSE A CATEGORY -->
-    <div class="modal fade" id="chooseAcategoryModal" tabindex="-1" role="dialog"
+    <div class="modal fade dm-sans-200" id="chooseAcategoryModal" tabindex="-1" role="dialog"
         aria-labelledby="chooseAcategoryModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -210,8 +212,7 @@
                             <button type="button" class="btn btn-primary" data-dismiss="modal"
                                 id="choose-neighbourhood-button">Take me There!</button>
 
-                            <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                id="choose-all-neighbourhood-button">Reset</button>
+
 
                         </div>
                     </div>
@@ -238,7 +239,7 @@
 
 
     <!-- MODAL: SPIDER! -->
-    <div class="modal fade" id="spiderModal" tabindex="-1" role="dialog" aria-labelledby="spiderModalTitle"
+    <div class="modal fade dm-sans-200" id="spiderModal" tabindex="-1" role="dialog" aria-labelledby="spiderModalTitle"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
