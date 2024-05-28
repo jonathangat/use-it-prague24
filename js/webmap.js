@@ -207,9 +207,20 @@ neighbourhoods_array.forEach(function(val) {
 let labels = [];
 for (var i = 0; i < Object.keys(iconDic).length; i++) { 
 
-    labels.push(
-        `<i class="custom-icon" style="background-image:url('${iconDic[Object.keys(iconDic)[i]].options.iconUrl}')"></i> ${Object.keys(iconDic)[i]} `);
+    if (Object.keys(iconDic)[i] == 'slow down (mind the details)') {
+        labels.push(
+            `<h6 class='pt-4'>Act Like a Local</h6><i class="custom-icon" style="background-image:url('${iconDic[Object.keys(iconDic)[i]].options.iconUrl}')"></i> ${Object.keys(iconDic)[i]} `);
+    
 
+    }
+
+    else {
+        labels.push(
+            `<i class="custom-icon" style="background-image:url('${iconDic[Object.keys(iconDic)[i]].options.iconUrl}')"></i> ${Object.keys(iconDic)[i]} `);
+    
+    }
+
+    
 
  };
 
@@ -222,17 +233,31 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
     let locations  = L.featureGroup();
     let locations_filtered =  L.featureGroup();
 
-    L.geoJSON(raw_data, {    pointToLayer: function(feature, latlng) {
+    let resetMap = function() {
+        // clear layers
+        locations.clearLayers();
+        locations_filtered.clearLayers();
+        map.removeLayer(locations);
+        map.removeLayer(locations_filtered);
+        
+        L.geoJSON(raw_data, {    pointToLayer: function(feature, latlng) {
             // Use the custom icon for each feature
             return L.marker(latlng, { icon: iconDic[feature.properties.legend_category] });
         },
         onEachFeature: function(feature, layer) {
-            layer.bindPopup(`<div class="dm-sans-100"><h3>${feature.properties.quirky_title}</h3></div><div class="dm-sans-200">${feature.properties.ai_description}</div> <div class="dm-sans-100" style="margin-top:10px;"><b>${feature.properties.location_name} </b>${feature.properties.sub_category} in ${feature.properties.neighbourhood}</div><div class="dm-sans-100">${feature.properties.address}</div>`);
+            const popup_content = `<div class="dm-sans-100"><h3>${feature.properties.quirky_title}</h3></div><div class="dm-sans-200">${feature.properties.ai_description}</div> <div class="dm-sans-100" style="margin-top:10px;"><b>${feature.properties.location_name} </b>${feature.properties.sub_category} in ${feature.properties.neighbourhood}</div><div class="dm-sans-100">${feature.properties.address}</div>`;
+            layer.bindPopup(popup_content);
         }}).addTo(locations);
         locations.addTo(map);
         map.flyToBounds(locations.getBounds());
         populate_category_filter(raw_data);
         map.spin(false);
+    };
+
+    // reset map
+    resetMap();
+
+
 
 
 
@@ -254,10 +279,6 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
         map.removeLayer(locations_filtered);
 
         // get neighbourhood
-        let selected_neighbourhood = $('#dropdownMenuLink').text().trim();
-        if (selected_neighbourhood.trim() === 'Select neighbourhood:') {
-            selected_neighbourhood = null
-        };
         let selected_buttons = [];
         $('.btn-check:checked').each(function() {
             var label = $('label[for="' + $(this).attr('id') + '"]').text().trim().toLowerCase();
@@ -267,26 +288,22 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
             selected_buttons.push(label);
             $(this).prop('checked', false); 
         });
-        $('#dropdownMenuLink').text('Select neighbourhood:');
+        
 
         // Function to filter the GeoJSON
-        function filterGeoJSON(geojson, filterCategories, optionalNeighbourhood) {
+        function filterGeoJSON(geojson, filterCategories) {
             return {
             ...geojson,
             features: geojson.features.filter(feature => {
                 const legendCategory = feature.properties.legend_category;
-                const neighbourhood = feature.properties.neighbourhood;
-        
                 const matchesCategory = filterCategories.length > 0 ? filterCategories.includes(legendCategory) : true;
-                const matchesNeighbourhood = optionalNeighbourhood ? neighbourhood === optionalNeighbourhood : true;
-        
-                return matchesCategory && matchesNeighbourhood;
+                return matchesCategory;
             })
             };
         }
         
 
-        const filteredGeoJSON = filterGeoJSON(raw_data, selected_buttons, selected_neighbourhood);
+        const filteredGeoJSON = filterGeoJSON(raw_data, selected_buttons);
         if (filteredGeoJSON.features.length > 0) {
 
             locations.clearLayers();
@@ -321,14 +338,79 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
         $('#choose-category-modal-body .form-check-input:checked').prop('checked', false);
     });
 
-    // select all
+    // select all categories
     $('#select-all-categories-btn').click(function(){
         $('#choose-category-modal-body .form-check-input').prop('checked', true);
     });
 
 
-    // choose a category save button
-    $('#chooseAcategoryModal').on('hidden.bs.modal', function(){
+    // uncheck all neighbourhoods
+    $('#select-no-neighbourhoods-btn').click(function(){
+        $('#like-local-options .btn-check:checked').prop('checked', false);
+    });
+
+    // select all categories
+    $('#select-all-neighbourhoods-btn').click(function(){
+        $('#like-local-options .btn-check').prop('checked', true);
+    });
+
+    // choose a neighbourhood
+    $('#choose-neighbourhood-button').click(function() {
+        let selected_neighbourhood = $('#dropdownMenuLink').text().trim();
+        if (selected_neighbourhood.trim() === 'Select neighbourhood:') {
+            selected_neighbourhood = null
+        }
+        else {
+            locations.clearLayers();
+            map.removeLayer(locations);
+
+            function filterGeoJSON(geojson, neighbourhood) {
+                return {
+                    ...geojson,
+                    features: geojson.features.filter(feature => {
+                        return feature.properties.neighbourhood === neighbourhood;
+                    })
+                };
+            }
+
+            let filtered_layer = filterGeoJSON(raw_data, selected_neighbourhood);
+            L.geoJSON(filtered_layer, {    pointToLayer: function(feature, latlng) {
+                // Use the custom icon for each feature
+                return L.marker(latlng, { icon: iconDic[feature.properties.legend_category] });
+            },
+            onEachFeature: function(feature, layer) {
+                layer.bindPopup(`<div class="dm-sans-100"><h3>${feature.properties.quirky_title}</h3></div><div class="dm-sans-200">${feature.properties.ai_description}</div> <div class="dm-sans-100" style="margin-top:10px;"><b>${feature.properties.location_name} </b>${feature.properties.sub_category} in ${feature.properties.neighbourhood}</div><div class="dm-sans-100">${feature.properties.address}</div>`);
+            }}).addTo(locations);
+            
+
+            // add to map
+            locations.addTo(map);
+
+            if (filtered_layer.features.length > 1) {
+                populate_category_filter(filtered_layer);
+                map.flyToBounds(locations.getBounds());
+            }
+            else {
+                var feature = filtered_layer.features[0];
+                var coordinates = feature.geometry.coordinates;
+                var point = L.latLng(coordinates[1], coordinates[0]); // GeoJSON format is [longitude, latitude]
+                populate_category_filter(filtered_layer);
+                map.panTo(point);
+            }
+            
+
+
+            
+        }
+
+        $('#dropdownMenuLink').text('Select neighbourhood:');
+
+    });
+
+
+    // choose a category save button choose-category-button
+    // $('#chooseAcategoryModal').on('hidden.bs.modal', function(){
+    $('#choose-category-button').click(function(){
         // get values of checked boxes
         let selected_categories_list = [];
         $('#choose-category-modal-body input[type="checkbox"]:checked').each(function() {
@@ -366,7 +448,17 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
 
             // add to map
             locations_filtered.addTo(map);
-            map.flyToBounds(locations_filtered.getBounds());
+
+            if (filtered_layer.features.length > 1) {
+                map.flyToBounds(locations_filtered.getBounds());
+            }
+            else {
+                var feature = filtered_layer.features[0];
+                var coordinates = feature.geometry.coordinates;
+                var point = L.latLng(coordinates[1], coordinates[0]); // GeoJSON format is [longitude, latitude]
+                map.panTo(point);
+            }
+            
 
         }
 
@@ -375,6 +467,12 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
             
         }
 
+    });
+
+    // reset button
+    $('#choose-all-neighbourhood-button').click(function(){
+        // reset map
+        resetMap();
     });
 
 
@@ -398,13 +496,22 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
 
             // get the map bounds
             let userLocation = L.latLng(userLat, userLong);
+            let testLocation = L.latLng(50.08788538456781, 14.420520193695175);
+            let pragueExtent_northEast = L.latLng(50.19652977176375, 14.739976445243656);
+            let pragueExtent_southWest = L.latLng(49.92346683504081, 14.186088870217787);
+            let pragueExtent = L.latLngBounds(pragueExtent_northEast,pragueExtent_southWest);
+            console.log(pragueExtent);
+            console.log(pragueExtent.contains(testLocation));
             let mapBounds = map.getBounds();
+            console.log(mapBounds);
+            console.log(userLocation);
+            console.log(mapBounds.contains(testLocation));
             if (mapBounds.contains(userLocation)) {
                 console.log(`Yay! You are in Prague at the moment! Your location is ${userLong},${userLat}`)
 
             }
             else {
-                alert(`Arrr! Where be ye hidin'?? Are you even in Prague?!`)
+                alert(`Arrr! Where be ye hidin'?? Are you even in Prague?! Your location is ${userLong},${userLat}`)
             }
 
             

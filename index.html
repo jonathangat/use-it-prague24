@@ -124,24 +124,6 @@
                 </div>
 
                 <div class="modal-body">
-
-                    <!-- SELECT NEIGHBOURHOOD -->
-                    <div class="row mt-2 mb-4">
-                        <h6>Where are we heading?</h6>
-                        <div class="dropdown show">
-                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Select neighbourhood:
-                            </a>
-
-                            <div class="dropdown-menu" id="select-neighbourhood-list"
-                                aria-labelledby="dropdownMenuLink">
-                            </div>
-                        </div>
-                    </div>
-
-
-
                     <!-- WHAT DO YOU FANCY EXPLORING?-->
                     <div class="row">
                         <h6>What do you fancy exloring?</h6>
@@ -183,6 +165,10 @@
 
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="select-all-neighbourhoods-btn">Select
+                        All</button>
+                    <button type="button" class="btn btn-secondary" id="select-no-neighbourhoods-btn">Clear
+                        Selection</button>
                     <button type="button" class="btn btn-primary" data-dismiss="modal"
                         id="act-like-a-local-save-button">Let's do it!</button>
                 </div>
@@ -204,8 +190,40 @@
 
                 </div>
 
-                <div class="modal-body" id="choose-category-modal-body">
+
+
+                <div class="modal-body">
+                    <!-- SELECT NEIGHBOURHOOD -->
+                    <div class="row mt-2 mb-4">
+                        <h6>Where are we heading?</h6>
+                        <div class="dropdown show pb-4"
+                            style="border-bottom: var(--bs-modal-header-border-width) solid var(--bs-modal-header-border-color);">
+                            <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Select neighbourhood:
+                            </a>
+
+                            <div class="dropdown-menu" id="select-neighbourhood-list"
+                                aria-labelledby="dropdownMenuLink">
+                            </div>
+
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                id="choose-neighbourhood-button">Take me There!</button>
+
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                id="choose-all-neighbourhood-button">Reset</button>
+
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <h6>Select by Category</h6>
+                    </div>
+
+                    <div class="row m-1" id="choose-category-modal-body"></div>
                 </div>
+
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="select-all-categories-btn">Select All</button>
                     <button type="button" class="btn btn-secondary" id="select-no-categories-btn">Clear
