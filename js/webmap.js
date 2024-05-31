@@ -232,12 +232,15 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
     // create feature groups
     let locations  = L.featureGroup();
     let locations_filtered =  L.featureGroup();
+    let spider = L.featureGroup();
 
     let resetMap = function() {
         // clear layers
         locations.clearLayers();
         locations_filtered.clearLayers();
+        spider.clearLayers();
         map.removeLayer(locations);
+        map.removeLayer(spider);
         map.removeLayer(locations_filtered);
         
         L.geoJSON(raw_data, {    pointToLayer: function(feature, latlng) {
@@ -275,7 +278,9 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
         // remove all content from map
         locations.clearLayers();
         locations_filtered.clearLayers();
+        spider.clearLayers();
         map.removeLayer(locations);
+        map.removeLayer(spider);
         map.removeLayer(locations_filtered);
 
         // get neighbourhood
@@ -306,7 +311,13 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
         const filteredGeoJSON = filterGeoJSON(raw_data, selected_buttons);
         if (filteredGeoJSON.features.length > 0) {
 
+            // clear map
             locations.clearLayers();
+            locations_filtered.clearLayers();
+            spider.clearLayers();
+            map.removeLayer(locations);
+            map.removeLayer(spider);
+            map.removeLayer(locations_filtered);
             L.geoJSON(filteredGeoJSON, {    pointToLayer: function(feature, latlng) {
                 // Use the custom icon for each feature
                 return L.marker(latlng, { icon: iconDic[feature.properties.legend_category] });
@@ -362,6 +373,11 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
         }
         else {
             locations.clearLayers();
+            locations_filtered.clearLayers();
+            spider.clearLayers();
+            map.removeLayer(locations);
+            map.removeLayer(spider);
+            map.removeLayer(locations_filtered);
             map.removeLayer(locations);
 
             function filterGeoJSON(geojson, neighbourhood) {
@@ -420,7 +436,12 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
         // get existing layer
 
         let existing_layer = locations.toGeoJSON();
+        locations.clearLayers();
         locations_filtered.clearLayers();
+        spider.clearLayers();
+        map.removeLayer(locations);
+        map.removeLayer(spider);
+        map.removeLayer(locations_filtered);
         function filterGeoJSON(geojson, filterCategories) {
             return {
             ...geojson,
@@ -496,18 +517,59 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
 
             // get the map bounds
             let userLocation = L.latLng(userLat, userLong);
-            let testLocation = L.latLng(50.08788538456781, 14.420520193695175);
             let pragueExtent_northEast = L.latLng(50.19652977176375, 14.739976445243656);
             let pragueExtent_southWest = L.latLng(49.92346683504081, 14.186088870217787);
             let pragueExtent = L.latLngBounds(pragueExtent_northEast,pragueExtent_southWest);
-            console.log(pragueExtent);
-            console.log(pragueExtent.contains(testLocation));
-            let mapBounds = map.getBounds();
-            console.log(mapBounds);
-            console.log(userLocation);
-            console.log(mapBounds.contains(testLocation));
-            if (mapBounds.contains(userLocation)) {
+            if (pragueExtent.contains(userLocation)) {
                 console.log(`Yay! You are in Prague at the moment! Your location is ${userLong},${userLat}`)
+                let origin_coordinates = `${userLong},${userLat}`;
+                let osrm_table_request_coordinates = [origin_coordinates];
+                // get current layer content
+                map.eachLayer(function(layer){
+                    if (layer instanceof L.Marker) {
+                        var latlng = layer.getLatLng();
+                        osrm_table_request_coordinates.push(`${latlng['lng']},${latlng['lat']}`)
+                    }
+                    
+                });
+
+                // generalise function to find keys of smallest values
+                function keysOfSmallestValues(obj, numKeys) {
+                    const keyValuePairs = Object.entries(obj);
+                    keyValuePairs.sort((a,b) => a[1] - b[1]);
+                    const smallestKeys = keyValuePairs.slice(0, numKeys).map(pair => pair[0])
+                    return smallestKeys.map(kval => parseInt(kval))
+                }
+
+                var osrm_table_request = `http://router.project-osrm.org/table/v1/foot/${osrm_table_request_coordinates.join(';')}?sources=0`;
+                fetch(osrm_table_request)
+                    .then(response => response.json())
+                    .then(data => {
+                var smallerValue = Math.min(osrm_table_request_coordinates.length, 6);
+                var nearest3_idx = keysOfSmallestValues(data.durations[0], smallerValue).slice(-1*smallerValue);
+                var nearest3_locations = nearest3_idx.map(index => osrm_table_request_coordinates[index]);
+                
+                // iterate over the nearest locations
+                nearest3_locations.forEach(function(near_location) {
+                    var osrm_route_request = `http://router.project-osrm.org/route/v1/foot/${origin_coordinates};${near_location}?overview=full&geometries=geojson`;
+                    // fetch route
+                    fetch(osrm_route_request).then(response => response.json()).then(data => {
+                        // extract geojson
+                        let route_geom = data.routes[0].geometry;
+                        L.geoJSON(route_geom).addTo(spider);
+                    }).catch(error => console.error('Error:', error));
+                });
+
+                // add origin as L.circleMarker()
+                L.circleMarker(userLocation).addTo(spider, {color:'red',fillcolor:'blue',fillopacity:0.5, radius:5});
+
+                // add to map
+                spider.addTo(map);
+                let spider_bounds = spider.getBounds()
+                map.flyToBounds(spider_bounds);
+            
+                    });
+
 
             }
             else {
