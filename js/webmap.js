@@ -541,7 +541,7 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
                     return smallestKeys.map(kval => parseInt(kval))
                 }
 
-                var osrm_table_request = `http://router.project-osrm.org/table/v1/foot/${osrm_table_request_coordinates.join(';')}?sources=0`;
+                var osrm_table_request = `https://router.project-osrm.org/table/v1/foot/${osrm_table_request_coordinates.join(';')}?sources=0`;
                 fetch(osrm_table_request)
                     .then(response => response.json())
                     .then(data => {
