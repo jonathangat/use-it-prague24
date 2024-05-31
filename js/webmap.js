@@ -551,7 +551,7 @@ for (var i = 0; i < Object.keys(iconDic).length; i++) {
                 
                 // iterate over the nearest locations
                 nearest3_locations.forEach(function(near_location) {
-                    var osrm_route_request = `http://router.project-osrm.org/route/v1/foot/${origin_coordinates};${near_location}?overview=full&geometries=geojson`;
+                    var osrm_route_request = `https://router.project-osrm.org/route/v1/foot/${origin_coordinates};${near_location}?overview=full&geometries=geojson`;
                     // fetch route
                     fetch(osrm_route_request).then(response => response.json()).then(data => {
                         // extract geojson
